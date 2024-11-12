@@ -1,0 +1,9 @@
+
+services:
+  nginx:
+    image: nginx-container
+    container_name: nginx-container
+    ports:
+      - "8080:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html
