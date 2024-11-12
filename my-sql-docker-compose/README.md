@@ -1,55 +1,55 @@
 Step 1: Project Structure
-Create a new directory for the project, e.g., mysql-volume-dockerfile.
-Inside this directory, create the following files:
-Dockerfile
-.env (to store environment variables like MySQL root password)
-Step 2: Writing the Dockerfile
-Here’s how the Dockerfile would look:
+In a new directory (e.g., mysql-volume-compose), create the following files:
 
-Dockerfile
+docker-compose.yml
+.env
+Step 2: Writing the docker-compose.yml File
+yaml
 Copy code
-# Dockerfile
+# docker-compose.yml
+version: '3.8'
 
-# Use MySQL 8 image
-FROM mysql:8.0
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
-# Set environment variables for MySQL root user
-ENV MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-ENV MYSQL_DATABASE=mydb
-
-# Expose MySQL port
-EXPOSE 3306
+volumes:
+  mysql_data:
 Explanation:
-FROM mysql:8.0: This line pulls the MySQL version 8.0 image from Docker Hub.
-ENV MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}: Sets the root password from the environment variable (we’ll set it in the .env file).
-ENV MYSQL_DATABASE=mydb: Automatically creates a database called mydb during initialization.
-EXPOSE 3306: Exposes port 3306, the default MySQL port, for external connections.
-Step 3: Creating the .env File
-Create a .env file in the same directory to store sensitive data:
+version: '3.8': Specifies the version of Docker Compose syntax.
+services: Defines the services in the application; here, only mysql.
+image: mysql:8.0: Specifies the MySQL 8.0 image.
+container_name: Sets the container name to mysql-container.
+environment: Sets environment variables from the .env file.
+ports: Maps port 3306 to the host.
+volumes:
+mysql_data:/var/lib/mysql: Mounts the mysql_data volume to store MySQL data.
+Step 3: Setting Up the .env File
+In the same directory, create the .env file:
 
 plaintext
 Copy code
 MYSQL_ROOT_PASSWORD=mysecretpassword
-Step 4: Building and Running the Docker Container
-In the VS Code terminal, navigate to your project directory and build the Docker image:
+Step 4: Running with Docker Compose
+Run the container with Docker Compose:
 
 bash
 Copy code
-docker build -t mysql-volume .
-Run the container with a volume:
-bash
-Copy code
-docker run -d -p 3306:3306 --name mysql-container \
-  --env-file .env \
-  -v mysql_data:/var/lib/mysql \
-  mysql-volume
-Explanation:
-docker build -t mysql-volume .: Builds an image called mysql-volume from the Dockerfile.
-docker run -d -p 3306:3306 --name mysql-container: Runs the container in detached mode, maps port 3306, and names it mysql-container.
---env-file .env: Loads environment variables from .env.
--v mysql_data:/var/lib/mysql: Creates a named volume called mysql_data to store MySQL data in /var/lib/mysql (MySQL's default data storage path).
+docker-compose up -d
+This command starts the MySQL container with the defined volume.
+
 Step 5: Testing the Volume
-Connect to the MySQL instance using a MySQL client or directly from the container:
+Follow the same steps to test the persistence as in the Dockerfile setup:
+
+Connect to the MySQL instance:
 
 bash
 Copy code
@@ -62,17 +62,17 @@ CREATE DATABASE testdb;
 USE testdb;
 CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255));
 INSERT INTO users (name) VALUES ('Alice');
-Stop and restart the container:
+Stop and restart the container with Docker Compose:
 
 bash
 Copy code
-docker stop mysql-container
-docker start mysql-container
-Reconnect and check if data persists:
+docker-compose down
+docker-compose up -d
+Verify persistence by reconnecting and checking data:
 
 sql
 Copy code
 USE testdb;
 SELECT * FROM users;
-If the data remains, the volume is working correctly.
+If the data is still there, the volume is functioning as expected.
 
