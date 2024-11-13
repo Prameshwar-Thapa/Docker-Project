@@ -1,0 +1,13 @@
+{
+    "name": "node-logging-app",
+    "version": "1.0.0",
+    "description": "A Node.js app for testing Docker volumes with logging",
+    "main": "app.js",
+    "dependencies": {},
+    "scripts": {
+      "start": "node app.js"
+    },
+    "author": "Your Name",
+    "license": "ISC"
+  }
+  
