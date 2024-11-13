@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  node-app:
+    image: node:18
+    container_name: logging-container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/logs
