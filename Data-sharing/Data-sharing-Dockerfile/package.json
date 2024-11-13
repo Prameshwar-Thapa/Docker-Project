@@ -1,0 +1,14 @@
+{
+    "name": "data-sharing-app",
+    "version": "1.0.0",
+    "description": "A Docker app for sharing data between containers",
+    "main": "producer.js",
+    "dependencies": {},
+    "scripts": {
+      "start-producer": "node producer.js",
+      "start-consumer": "node consumer.js"
+    },
+    "author": "Your Name",
+    "license": "ISC"
+  }
+  

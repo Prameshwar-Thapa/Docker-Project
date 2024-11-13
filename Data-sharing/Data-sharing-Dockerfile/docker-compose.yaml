@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  producer:
+    image: data-sharing-app:latest
+    container_name: producer-container
+    command: npm run start-producer
+  consumer:
+    image: data-sharing-app:latest
+    container_name: consumer-container
+    command: npm run start-consumer
+    volumes:
+      - shared_data:/shared-data
+
+volumes:
+  shared_data:
